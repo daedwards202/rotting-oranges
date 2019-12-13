@@ -1,8 +1,8 @@
 import java.util.Queue;
 import java.util.LinkedList;
 
-int rows = 3;
-int cols = 5;
+int rows;
+int cols;
 int iteration = 0;
 boolean displayed = false;
 boolean finished = false;
@@ -11,10 +11,9 @@ Queue<PairCoords> coords;
 Cell[][] grid;
 Cell currentCell;
 void setup() {
-  textSize(32);
+  textSize(20);
   size(1000, 600);
   background(0);
-  grid = new Cell[rows][cols];
   genGrid();
   coords = new LinkedList<PairCoords>();
   fillQueue();
@@ -23,7 +22,10 @@ void setup() {
 
 void printCoords() {
   for (PairCoords e : coords) {
-    print(e.x + " " + e.y + ", ");
+    if (e.x == -1 && e.y == -1)
+      print("(" + e.x + "," + e.y + ")");
+    else 
+      print("(" + e.x + "," + e.y + "), ");
   }
   println();  
 }
@@ -33,9 +35,8 @@ void draw() {
     displayGrid();
     displayed = true;
   }
-  if (keyPressed && !finished) { // or key == CODED
+  if (keyPressed && !finished) { 
     if (keyCode == UP || keyCode == DOWN || keyCode == LEFT || keyCode == RIGHT) {
-      delay(100);
       background(0);
       rotAll();
       displayGrid();
@@ -43,19 +44,29 @@ void draw() {
         iteration++;
       }
     }
+    delay(400);
   }
 }
 
 void genGrid() {
-  int[][] orangeStates = {{2, 1, 0, 2, 1},
-                          {1, 0, 1, 2, 1},
-                          {1, 0, 0, 2, 1}};
+  int[][] orangeStates = {{2, 1, 0, 0, 1, 1, 0, 0, 0, 1},
+                          {1, 0, 1, 1, 1, 2, 1, 0, 1, 1},
+                          {1, 1, 0, 1, 1, 2, 1, 0, 1, 0},
+                          {2, 1, 0, 0, 1, 1, 0, 1, 1, 1},
+                          {0, 0, 1, 2, 0, 1, 0, 0, 2, 1},
+                          {1, 0, 0, 0, 1, 0, 0, 1, 0, 1}};
   /*int[][] orangeStates = {{2, 1, 0, 2, 1},
-                          {0, 0, 1, 2, 1},
-                          {1, 0, 0, 2, 1}};*/         
+                            {1, 0, 1, 2, 1},
+                            {1, 0, 0, 2, 1}};*/
+  /*int[][] orangeStates = {{2, 1, 0, 2, 1},
+                            {0, 0, 1, 2, 1},
+                            {1, 0, 0, 2, 1}};*/       
+  rows = orangeStates.length;
+  cols = orangeStates[0].length;
+  grid = new Cell[rows][cols];
   for (int j = 0; j < rows; j++) 
     for (int i = 0; i < cols; i++) 
-        grid[j][i] = new Cell(width/cols*i, height/rows*j, i, j, orangeStates[j][i]);
+      grid[j][i] = new Cell(width/cols*i, height/rows*j, i, j, orangeStates[j][i]);
 }
 
 void displayGrid() {
